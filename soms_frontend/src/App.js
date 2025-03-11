@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+
+import React from 'react';
+import Products from './components/Products';
+import Navbar from './components/Navbar';
+import HeroPage from './components/HeroPage';
+import Footer from './components/Footer';
+import ReviewSlider from './components/ReviewSlider';
+// Import Slick Carousel CSS
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import AdminPanel from './_AdminUI/AdminPanel';
+import Login from './components/Login';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="relative flex size-full min-h-screen flex-col bg-[#FBF8EF] group/design-root overflow-x-hidden" 
+    style={{fontFamily: 'Epilogue, "Noto Sans", sans-serif'}}>
+      <div className="layout-container flex h-full grow flex-col">
+        <Navbar />
+        <MainContent />
+        <Footer/>
+        <AdminPanel/>
+        <Login/>
+      </div>
     </div>
   );
 }
+
+
+function MainContent() {
+  return (
+    <div className="w-full flex flex-1 justify-center py-5">
+      <div className="layout-content-container flex flex-col max-w-[1300px] flex-1 rounded-xl bg-cover">
+        <HeroPage />
+        <Products />
+        <ReviewSlider/>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
 
 export default App;

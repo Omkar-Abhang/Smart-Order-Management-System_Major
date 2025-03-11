@@ -1,25 +1,29 @@
 package SOMS.super_backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
 
-@Document(collection = "Transaction")
-public class Transaction {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "Payments")
+public class Payment {
+
     @Id
-    private int transactionId;
+    private String id;  // Unique Payment ID
 
-    @DBRef
-    private Order order;  // Reference to the Order
+    private String orderId;  // Link to the Order
+    private String userId;   // The customer who made the payment
 
-    @DBRef
-    private User user;     // Reference to the User who made the payment
-    private LocalDateTime paymentDate;
-    private double  amount;
-    private String paymentMethod;   // E.g., cash or online
-    private String status;  // E.g., "Success", "Failed"
+    private String paymentMethod;  // COD, ONLINE
+    private String transactionId;  // Only for ONLINE payments
+    private double amount;  // Paid amount
 
+    private String status;  // PENDING, SUCCESS, FAILED
 
+    private LocalDateTime paymentDate;  // Timestamp of payment
 }

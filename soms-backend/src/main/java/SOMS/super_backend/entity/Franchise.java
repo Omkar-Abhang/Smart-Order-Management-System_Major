@@ -1,46 +1,21 @@
 package SOMS.super_backend.entity;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "Franchise")
+@Data
+@Document(collection = "Franchises")
 public class Franchise {
     @Id
-    private int id;
-    private String name;
+    private String id;
+
+    @Indexed(unique = true)
+    private String name; // Unique Franchise Name
+
     private String location;
-    private String contactNumber;
-
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
+    private String adminId;
+    private String contact;
+    private String status; // ACTIVE, INACTIVE
 }

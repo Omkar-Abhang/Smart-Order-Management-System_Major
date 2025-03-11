@@ -6,5 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<User, String> {
-    Optional<User> findByUsername(String username);
+    Optional<User> findByPhone(String phone); // Find user by phone (for OTP login)
+    Optional<User> findByEmail(String email); // Find user by email
+    boolean existsByPhone(String phone); // Check if Phone already exists
+    boolean existsByEmail(String email); // Check if Email already exists
 }

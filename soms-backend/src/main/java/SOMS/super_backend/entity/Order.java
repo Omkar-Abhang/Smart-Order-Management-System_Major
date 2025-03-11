@@ -1,72 +1,46 @@
 package SOMS.super_backend.entity;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "Order")
+@Data
+@Document(collection = "Orders")
 public class Order {
     @Id
-    private int id;
+    private String id;
 
-    @DBRef
-    private User user;  // Reference to the User who placed the order
-
-    @DBRef
-    private Franchise franchise;  // Reference to the Franchise handling the order
-
-    private String status;  // E.g., "Pending", "Completed"
+    private String userId; // Customer who placed the order
+    private List<OrderItem> items;
     private double totalAmount;
-    private List<OrderItem> items;  // List of items in the order
+    private String paymentMethod; // COD or ONLINE
+    private String paymentStatus; // PENDING, COMPLETED, FAILED
+    @Indexed(unique=true)
+    private String transactionId;   // If ONLINE payment, stores transaction ID
 
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
+    private String orderStatus; // PENDING, PREPARING, OUT_FOR_DELIVERY, DELIVERED
+    private List<DelivaryAddress> deliveryAddress;
+    private LocalDateTime orderDate;  // Timestamp of order placement
 
-    public void setId(int id) {
-        this.id = id;
-    }
+}
 
-    public User getUser() {
-        return user;
-    }
+@Data
+class OrderItem {
+    private String productId;
+    private int quantity;
+    private double price;
+}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Franchise getFranchise() {
-        return franchise;
-    }
-
-    public void setFranchise(Franchise franchise) {
-        this.franchise = franchise;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
+@Data
+class DelivaryAddress {
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String contactNumber;
 }

@@ -1,0 +1,22 @@
+.review-slider {
+    max-width: 1200px;
+    margin: 10 auto;
+    padding: 40px 20px;
+  }
+  
+  .review-item {
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  
+  .review-item p {
+    font-size: 16px;
+  }
+  
+  .review-item button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
