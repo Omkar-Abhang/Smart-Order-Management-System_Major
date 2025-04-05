@@ -2,6 +2,7 @@ package SOMS.super_backend.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,5 +18,4 @@ public class Franchise {
     private String location;
     private String adminId;
     private String contact;
-    private String status; // ACTIVE, INACTIVE
 }

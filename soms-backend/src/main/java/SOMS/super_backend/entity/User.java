@@ -12,7 +12,7 @@ public class User {
     @Id
     private String id;
 
-    private String role; // CUSTOMER, ADMIN, SUPER_ADMIN
+    private String role; // Customer, Store-Owner, Admin
 
     private String name;
 
@@ -24,27 +24,20 @@ public class User {
 
     private String password; // Only for Admin/SuperAdmin, Customers use OTP
 
-    private List<Address> address;
+    private String address;
 
     private List<String> orderIds; // Stores order IDs as strings
+    private String franchiseId;
 
     // ✅ Method to check if user requires OTP login
     public boolean isOtpLogin() {
-        return this.role.equalsIgnoreCase("CUSTOMER");
+        return this.role.equalsIgnoreCase("Customer");
     }
 
     // ✅ Method to check if user requires username-password login
     public boolean isPasswordLogin() {
-        return this.role.equalsIgnoreCase("ADMIN") || this.role.equalsIgnoreCase("SUPER_ADMIN");
+        return this.role.equalsIgnoreCase("Store-Owner") || this.role.equalsIgnoreCase("Admin");
     }
 
 }
 
-@Data
-class Address {
-    private String street;
-    private String city;
-    private String state;
-    private String zipCode;
-    private String contactNumber;
-}

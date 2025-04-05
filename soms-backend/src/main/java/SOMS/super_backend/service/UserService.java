@@ -12,7 +12,6 @@ import java.util.Random;
 
 @Service
 @RestController
-
 public class UserService {
 
     @Autowired
