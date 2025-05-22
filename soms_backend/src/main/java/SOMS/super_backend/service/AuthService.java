@@ -34,7 +34,7 @@ public class AuthService {
 
         if (!user.getRole().equalsIgnoreCase(role)) return null; // Role mismatch
 
-        return jwtUtil.generateToken(email);
+        return jwtUtil.generateToken(user.getEmail(),user.getId(),user.getRole());
     }
 }
 

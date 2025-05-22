@@ -1,73 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function InventoryController() {
-  const [inventory, setInventory] = useState([]);
-  const [item, setItem] = useState({ name: "", quantity: "", description: "" });
-  const [request, setRequest] = useState({ name: "", quantity: "", reason: "" });
+  const [inventoryRequests, setInventoryRequests] = useState([]);
+  const [requestItems, setRequestItems] = useState([{ productId: "", quantity: "" }]);
   const [message, setMessage] = useState("");
+  const token = localStorage.getItem("token");
+  const [franchiseId, setFranchiseId] = useState("");
+
 
   useEffect(() => {
-    fetchInventory();
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      fetchFranchiseIdByUser(userId);
+    }
   }, []);
 
-  const fetchInventory = async () => {
+  useEffect(() => {
+    if (franchiseId) {
+      fetchInventoryRequests();
+    }
+  }, [franchiseId]);
+
+  const fetchFranchiseIdByUser = async (userId) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/inventory");
-      setInventory(response.data);
+      const res = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/storeowner/inventory/by-user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      const id = res.data?.id || res.data?._id;
+      setFranchiseId(id); 
+      console.log("Franchise ID:", id); 
+      if (franchiseId) {
+        fetchInventoryRequests(franchiseId);
+      } else {
+        console.warn("No franchise found for this user.");
+      }
     } catch (error) {
-      console.error("Error fetching inventory:", error);
+      console.error("Error fetching franchise by userId:", error);
+    }
+  };
+  
+
+  const fetchInventoryRequests = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/storeowner/inventory/franchise/${franchiseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setInventoryRequests(response.data);
+    } catch (error) {
+      console.error("Error fetching inventory requests:", error);
     }
   };
 
-  const handleAddItem = async () => {
-    if (!item.name || !item.quantity || !item.description) {
-      setMessage("All fields are required!");
-      return;
-    }
-    try {
-      await axios.post("http://localhost:5000/api/inventory", item);
-      setItem({ name: "", quantity: "", description: "" });
-      setMessage("Item added successfully!");
-      fetchInventory();
-    } catch (error) {
-      console.error("Error adding item:", error);
-      setMessage("Failed to add item.");
-    }
+  const handleRequestChange = (index, field, value) => {
+    const updated = [...requestItems];
+    updated[index][field] = value;
+    setRequestItems(updated);
   };
 
-  const handleDeleteItem = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/inventory/${id}`);
-      setMessage("Item deleted successfully!");
-      fetchInventory();
-    } catch (error) {
-      console.error("Error deleting item:", error);
-      setMessage("Failed to delete item.");
-    }
+  const handleAddRequestRow = () => {
+    setRequestItems([...requestItems, { productId: "", quantity: "" }]);
   };
 
-  const handleUpdateItem = async (id) => {
-    try {
-      await axios.put(`http://localhost:5000/api/inventory/${id}`, item);
-      setItem({ name: "", quantity: "", description: "" });
-      setMessage("Item updated successfully!");
-      fetchInventory();
-    } catch (error) {
-      console.error("Error updating item:", error);
-      setMessage("Failed to update item.");
-    }
+  const handleRemoveRequestRow = (index) => {
+    const updated = [...requestItems];
+    updated.splice(index, 1);
+    setRequestItems(updated);
   };
 
   const handleRequestMaterial = async () => {
-    if (!request.name || !request.quantity || !request.reason) {
-      setMessage("All fields are required for request!");
+    if (!franchiseId || requestItems.some(item => !item.productId || !item.quantity)) {
+      alert("All fields are required!");
       return;
     }
+
     try {
-      await axios.post("http://localhost:5000/api/inventory/request", request);
-      setRequest({ name: "", quantity: "", reason: "" });
-      setMessage("Request sent successfully!");
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/storeowner/inventory/request`, {
+        franchiseId,
+        items: requestItems,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setRequestItems([{ productId: "", quantity: "" }]);
+      alert("Request sent successfully!");
+      fetchInventoryRequests();
     } catch (error) {
       console.error("Error sending request:", error);
       setMessage("Failed to send request.");
@@ -75,85 +104,78 @@ function InventoryController() {
   };
 
   return (
-    <div className="flex-1 p-10">
-      <h1 className="text-2xl font-bold">Inventory</h1>
-      
-      <div className="my-4">
-        <input
-          type="text"
-          placeholder="Name"
-          value={item.name}
-          onChange={(e) => setItem({ ...item, name: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Quantity"
-          value={item.quantity}
-          onChange={(e) => setItem({ ...item, quantity: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={item.description}
-          onChange={(e) => setItem({ ...item, description: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <button onClick={handleAddItem} className="bg-yellow-400 text-black font-bold  px-4 py-2 rounded">Add Item</button>
-      </div>
+    <div className="flex-1 p-10 bg-gray-100">
+      <h1 className="text-2xl font-bold">Inventory Requests</h1>
 
-      {message && <p>{message}</p>}
-
-      <table className="w-full bg-white rounded shadow-sm">
+      {/* Inventory Request List */}
+      <table className="w-full mt-4 bg-white rounded shadow-sm">
         <thead>
-          <tr className="bg-yellow-100">
-            <th className="p-2">Name</th>
+          <tr className="bg-yellow-100 text-center">
+            <th className="p-2">Product ID</th>
             <th>Quantity</th>
-            <th>Description</th>
-            <th>Actions</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {inventory.map(item => (
-            <tr key={item.id} className="border-t text-center">
-              <td className="p-2">{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>{item.description}</td>
-              <td>
-                <button onClick={() => handleUpdateItem(item.id)} className="bg-green-500 text-white px-4 py-1 rounded mr-2">Update</button>
-                <button onClick={() => handleDeleteItem(item.id)} className="bg-red-500 text-white px-4 py-1 rounded">Delete</button>
-              </td>
-            </tr>
-          ))}
+          {inventoryRequests.flatMap((request) =>
+            request.items.map((item, idx) => (
+              <tr key={`${request.id}-${idx}`} className="border-t text-center">
+                <td className="p-2">{item.productId}</td>
+                <td>{item.quantity}</td>
+                <td>{request.status}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
+      {/* Request Inventory Material */}
       <h2 className="text-xl font-bold mt-10">Request Inventory Material</h2>
-      <div className="my-4">
-        <input
-          type="text"
-          placeholder="Name"
-          value={request.name}
-          onChange={(e) => setRequest({ ...request, name: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Quantity"
-          value={request.quantity}
-          onChange={(e) => setRequest({ ...request, quantity: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <input
-          type="text"
-          placeholder="Reason"
-          value={request.reason}
-          onChange={(e) => setRequest({ ...request, reason: e.target.value })}
-          className="border p-2 mr-2"
-        />
-        <button onClick={handleRequestMaterial} className="bg-yellow-400 text-black font-bold px-4 py-2 rounded">Request Material</button>
+
+      {requestItems.map((req, index) => (
+        <div key={index} className="flex items-center gap-2 my-2">
+          <input
+            type="text"
+            placeholder="Product ID"
+            value={req.productId}
+            onChange={(e) => handleRequestChange(index, "productId", e.target.value)}
+            className="border p-2"
+          />
+          <input
+            type="number"
+            placeholder="Quantity"
+            value={req.quantity}
+            onChange={(e) => handleRequestChange(index, "quantity", e.target.value)}
+            className="border p-2"
+          />
+          {index > 0 && (
+            <button
+              onClick={() => handleRemoveRequestRow(index)}
+              className="bg-red-400 text-white px-2 py-1 rounded"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      ))}
+
+      <button
+        onClick={handleAddRequestRow}
+        className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+      >
+        Add Another Item
+      </button>
+
+      <div className="mt-4">
+        <button
+          onClick={handleRequestMaterial}
+          className="bg-yellow-400 text-red-500 font-bold px-4 py-2 rounded"
+        >
+          Submit Request
+        </button>
       </div>
+
+      {message && <p className="mt-2 text-red-600">{message}</p>}
     </div>
   );
 }

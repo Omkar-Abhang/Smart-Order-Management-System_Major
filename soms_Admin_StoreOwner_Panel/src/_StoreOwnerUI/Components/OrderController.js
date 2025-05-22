@@ -24,7 +24,7 @@ function OrderController() {
   const filteredOrders = filter === "All" ? orders : orders.filter(order => order.status === filter);
 
   return (
-    <div className="flex-1 p-10">
+    <div className="flex-1 p-10 bg-gray-100">
       <h1 className="text-2xl font-bold">Orders</h1>
       
       <div className="my-4 space-x-2">

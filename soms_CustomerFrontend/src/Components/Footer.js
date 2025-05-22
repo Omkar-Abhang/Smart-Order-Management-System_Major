@@ -10,7 +10,7 @@ function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">
             <a
               className="text-[#A07D1C] text-base font-normal leading-normal min-w-40"
-              href="#"
+              href="/"
             >
               +91 7249843468
             </a>
@@ -27,7 +27,7 @@ function Footer() {
                 <FaMailBulk size={24} />
               </div>
             </a>
-            <a href="tel:+123456789" aria-label="Phone">
+            <a href="tel:+91 7249843468" aria-label="Phone">
               <div className="text-[#A07D1C]">
                 <FaPhoneAlt size={24} />
               </div>
@@ -53,7 +53,7 @@ function Footer() {
               </div>
             </a>
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/in/omkar-abhang-586236250/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"

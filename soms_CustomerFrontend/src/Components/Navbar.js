@@ -29,20 +29,30 @@ function Navbar() {
   };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#F5EFDB]  border-black shadow-lg">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#F5EFDB]  border-black shadow-lg sticky top-0 z-50 bg-white">
       <div className="flex items-center gap-2 text-[#201A09]">
         <div>
           <img src={logo} alt="Description of image" className="w-40 h-20" />
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold text-[#201A09] ml-10">Welcome to Bakery Smart <span className="font-bold decoration-slate-900 text-uppercase text-2xl">{username}</span></h2>
-
+      <h2 className="text-xl font-semibold text-[#201A09] ml-10">
+        Welcome to Bakery Smart{" "}
+        <span className="font-bold decoration-slate-900 text-uppercase text-2xl">
+          {username}
+        </span>
+      </h2>
 
       {/* Navbar Right Side */}
       <div className="flex items-center gap-8 md:gap-4">
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-9">
+        <a
+            className="text-[#201A09] text-sm font-medium leading-normal"
+            href="/"
+          >
+            Home
+          </a>
           <a
             className="text-[#201A09] text-sm font-medium leading-normal"
             href="/about"
@@ -119,7 +129,9 @@ function Navbar() {
           isOpen ? "block" : "hidden"
         } md:hidden absolute top-0 left-0 w-full bg-white p-4 shadow-lg z-20`}
       >
-      <h2 className="text-xl font-semibold text-[#201A09]">Welcome  {username}</h2>
+        <h2 className="text-xl font-semibold text-[#201A09]">
+          Welcome {username}
+        </h2>
 
         {/* Close Button */}
         <button

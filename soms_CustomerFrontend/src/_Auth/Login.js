@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import RegistrationPage from "./RegistrationPage";
+import ForgotPassword from "./ForgotPassword";
+
 
 const Login = ({ onClose }) => {
 
@@ -13,6 +15,9 @@ const Login = ({ onClose }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [registershow, setRegisterShow] = useState(false);
+
+  // forgot password  state
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Login function 
   const handleLogin = async (e) => {
@@ -26,7 +31,7 @@ const Login = ({ onClose }) => {
     console.log(loginPayload);
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/login",loginPayload );
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/login`,loginPayload );
       if (response.data.token && response.data.role) {
         alert("Login successful!");
         localStorage.setItem("token", response.data.token);
@@ -68,37 +73,11 @@ const Login = ({ onClose }) => {
           &times;
         </button>
 
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <hr />
-        <br />
 
-        <div className="flex justify-center mb-4">
-          <button
-            type="button"
-            className={`px-4 py-2 rounded-l ${
-              loginType === "Customer"
-                ? "bg-[#FAC638] text-red-500 font-bold"
-                : "bg-gray-200"
-            }`}
-            onClick={() => {
-              setLoginType("Customer");
-              setRole("");
-            }}
-          >
-            Customer Login
-          </button>
-          <button
-            type="button"
-            className={`px-4 py-2 rounded-r ${
-              loginType === "Admin"
-                ? "bg-[#FAC638] text-red-500 font-bold"
-                : "bg-gray-200"
-            }`}
-            onClick={() => setLoginType("Admin")}
-          >
-            Admin/Store Owner Login
-          </button>
-        </div>
+        <div className="flex justify-center mb-4 bg-[#FAC638] text-red-500 font-bold p-4 rounded border-2 border-black">
+          Customer Login</div>
+          <br/>
+          <br/>
 
         <form onSubmit={handleLogin}>
           <div className="mb-4">
@@ -165,6 +144,15 @@ const Login = ({ onClose }) => {
           >
             Login
           </button>
+          <p
+            onClick={() => setShowForgotPassword(true)}
+            className="text-sm text-blue-600 underline mt-2 text-center cursor-pointer"
+          >
+            Forgot Password?
+          </p>
+          {showForgotPassword && (
+            <ForgotPassword onClose={() => setShowForgotPassword(false)} />
+          )}
         </form>
 
         <br />

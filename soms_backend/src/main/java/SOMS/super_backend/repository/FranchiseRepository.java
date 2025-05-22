@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface FranchiseRepository extends MongoRepository<Franchise, String> {
     Optional<Franchise> findByName(String name); // Find franchise by unique name
-    List<Franchise> findByAdminId(String adminId); // Find all franchises managed by an admin
+//    List<Franchise> findByUserId(String userId); //
+    Optional<Franchise> findByUserId(String userId);  // ✅ returns Optional
+// Find all franchises managed by an admin (userId corresponds to adminId)
 }
 

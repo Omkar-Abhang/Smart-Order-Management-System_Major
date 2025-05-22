@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> getuserbyfranchise(String franchiseId){
+        return userRepository.findByFranchiseId(franchiseId);
+    }
+
     // 🔹 Get User by Phone Number (for OTP login)
     public Optional<User> getUserByPhone(String phone) {
         return userRepository.findByPhone(phone);
@@ -62,6 +66,10 @@ public class UserService {
             return userRepository.save(user);
         }
         return null;
+    }
+
+    public List<User> getallUser(){
+        return userRepository.findAll();
     }
 
 }

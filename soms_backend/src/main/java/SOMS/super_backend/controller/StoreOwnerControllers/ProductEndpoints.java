@@ -1,4 +1,4 @@
-package SOMS.super_backend.controller;
+package SOMS.super_backend.controller.StoreOwnerControllers;
 
 import SOMS.super_backend.entity.Product;
 import SOMS.super_backend.service.ProductService;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/storeowner")
-public class StoreownerController {
+public class ProductEndpoints {
 
     @Autowired
     private ProductService productService;
@@ -21,19 +21,15 @@ public class StoreownerController {
         return "store Owner page ";
     }
 
-
-
-//    1.Products Endpoints
-
-//    Add Products
+    //    1.Products Endpoints
+    //    Add Products
     @PostMapping("/addProduct")
     public ResponseEntity<String> addProduct(@RequestBody Product product){
         productService.saveProduct(product);
         return ResponseEntity.ok("Product added successfully!");
-
     }
 
-//    Get All Product
+    //    Get All Product
     @GetMapping("/getProduct")
     public List<Product> getAllProduct(){
         return productService.getAllProducts();
@@ -72,14 +68,5 @@ public class StoreownerController {
             return ResponseEntity.notFound().build();
         }
     }
-
-//    2.Order Endpoints
-
-
-
-//    3.Inventory Endpoints
-
-
-//    4.Employee Endpoints
 
 }

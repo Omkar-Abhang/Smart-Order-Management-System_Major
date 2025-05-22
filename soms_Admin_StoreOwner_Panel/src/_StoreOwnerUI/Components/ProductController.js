@@ -18,6 +18,8 @@ function ProductController() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
+  const token = localStorage.getItem("token"); // Get the token
+
 
   useEffect(() => {
     fetchProducts();
@@ -26,8 +28,10 @@ function ProductController() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/storeowner/getProduct"
-      );
+        `${process.env.REACT_APP_BACKEND_URL}/storeowner/getProduct`,{ headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProducts(response.data);
       setFilteredProducts(response.data); // Initialize filtered list
     } catch (error) {
@@ -56,19 +60,30 @@ function ProductController() {
       setMessage("All fields are required!");
       return;
     }
-
+  
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  
     try {
       if (isEditing) {
         await axios.put(
-          `http://localhost:8080/storeowner/updateProduct/${editingProductId}`,
-          product
+          `${process.env.REACT_APP_BACKEND_URL}/storeowner/updateProduct/${editingProductId}`,
+          product,
+          config
         );
         setMessage("Product updated successfully!");
       } else {
-        await axios.post("http://localhost:8080/storeowner/addProduct", product);
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/storeowner/addProduct`,
+          product,
+          config
+        );
         setMessage("Product added successfully!");
       }
-
+  
       setProduct({
         name: "",
         description: "",
@@ -88,6 +103,7 @@ function ProductController() {
       );
     }
   };
+  
 
   const handleEditProduct = (product) => {
     setProduct(product);
@@ -98,8 +114,12 @@ function ProductController() {
 
   const handleDeleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/storeowner/deleteProduct/${id}`);
-      setMessage("Product deleted successfully!");
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/storeowner/deleteProduct/${id}`,  {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("Product deleted successfully!");
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -108,8 +128,7 @@ function ProductController() {
   };
 
   return (
-    <div className="flex flex-col p-5">
-      <div className="w-full bg-white p-6 rounded-lg shadow-lg">
+    <div className="flex flex-col p-5 bg-gray-100">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Products</h1>
           <input
@@ -132,7 +151,7 @@ function ProductController() {
                 imageUrl: "",
               });
             }}
-            className="bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
+            className="bg-yellow-400 text-red-500 font-bold px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
           >
             + Add Product
           </button>
@@ -189,7 +208,6 @@ function ProductController() {
               ))}
             </tbody>
           </table>
-        </div>
       </div>
 
       {/* Modal for Add/Edit Product */}
@@ -284,7 +302,7 @@ function ProductController() {
               <div className="flex justify-between">
                 <button
                   onClick={handleAddOrUpdateProduct}
-                  className="bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
+                  className="bg-yellow-500 text-red-500 font-bold px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
                 >
                   {isEditing ? "Update Product" : "Add Product"}
                 </button>

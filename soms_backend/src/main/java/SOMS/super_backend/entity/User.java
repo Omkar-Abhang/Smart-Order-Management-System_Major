@@ -29,6 +29,8 @@ public class User {
     private List<String> orderIds; // Stores order IDs as strings
     private String franchiseId;
 
+
+
  
 
 }

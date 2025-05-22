@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import InventoryController from "./InventoryController";
-import ProductController from "./ProductController";
-import EmployeeController from "./EmployeeController";
-import OrderController from "./OrderController";
+import InventoryController from "./Components/InventoryController";
+import ProductController from "./Components/ProductController";
+import OrderController from "./Components/OrderController";
 import { useNavigate } from "react-router-dom";
 
 export default function StoreOwnerPanel() {
@@ -38,11 +37,12 @@ export default function StoreOwnerPanel() {
 
   return (
     <>
-      <header className="flex items-center justify-between whitespace-nowrap bg-yellow-400 border-b border-solid border-b-[#F5EFDB]  border-black shadow-lg">
+      <header className="flex items-center justify-between whitespace-nowrap bg-yellow-300 border-b border-solid border-b-[#F5EFDB]  border-black shadow-lg">
         <h2 className="text-4xl font-bold  flex justify-center p-4">
           Store Owner Panel
         </h2>
-        <div className="hidden md:block">
+        <p><strong>Welcome {localStorage.getItem("username")}</strong></p>
+        <div>
         {isLoggedIn && (<div className="flex items-center gap-3">
             <button
               onClick={handleLogout}
@@ -56,9 +56,9 @@ export default function StoreOwnerPanel() {
 
       <div className="flex h-screen  border-2 border-yellow-300">
         {/* Sidebar */}
-        <div className="w-1/5 bg-yellow-400 p-6">
+        <div className="w-1/5 bg-gray-200 p-6">
           <nav className="space-y-4">
-            {["Orders", "Products", "Inventory", "Employee"].map((menu) => (
+            {["Orders", "Products", "Inventory"].map((menu) => (
               <button
                 key={menu}
                 className={`w-full text-left p-2 rounded border-2 border-black shadow-sm ${
@@ -77,7 +77,6 @@ export default function StoreOwnerPanel() {
           {selectedMenu === "Orders" && <OrderController />}
           {selectedMenu === "Inventory" && <InventoryController />}
           {selectedMenu === "Products" && <ProductController />}
-          {selectedMenu === "Employee" && <EmployeeController />}
           {/* {selectedMenu === "Settings" && <h1 className="text-2xl font-bold">Settings</h1>} */}
         </div>
       </div>

@@ -20,11 +20,9 @@ public class Order {
     private double totalAmount;
     private String paymentMethod; // COD or ONLINE
     private String paymentStatus; // PENDING, COMPLETED, FAILED
-    @Indexed(unique=true)
-    private String transactionId;   // If ONLINE payment, stores transaction ID
-
+    private String transactionId; // for online payments
+    private String address;
     private String orderStatus; // PENDING, PREPARING, OUT_FOR_DELIVERY, DELIVERED
-    private List<DelivaryAddress> deliveryAddress;
     private LocalDateTime orderDate;  // Timestamp of order placement
 
 }
@@ -32,15 +30,10 @@ public class Order {
 @Data
 class OrderItem {
     private String productId;
+    private String productname;
+    private String productimage;
     private int quantity;
     private double price;
 }
 
-@Data
-class DelivaryAddress {
-    private String street;
-    private String city;
-    private String state;
-    private String zipCode;
-    private String contactNumber;
-}
+

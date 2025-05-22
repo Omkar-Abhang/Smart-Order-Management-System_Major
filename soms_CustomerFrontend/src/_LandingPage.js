@@ -5,22 +5,16 @@ import Footer from './Components/Footer';
 import Navbar from './Components/Navbar';
 import ReviewSlider from './Components/ReviewSlider';
 import Menu from './Components/Menu';
-import Login from "./_Auth/Login"
 // Import Slick Carousel CSS
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 function _LandingPage() {
-
-
-
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-[#FBF8EF] group/design-root overflow-x-hidden" 
       style={{ fontFamily: 'Epilogue, "Noto Sans", sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
-        <Navbar />
         <MainContent />
-        <Footer />
 
       </div>
  
@@ -32,9 +26,22 @@ function _LandingPage() {
 function MainContent() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
+  const [cartItems, setCartItems] = useState([]);
+
+  const updateQuantity = (productId, newQuantity) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const removeItem = (productId) => {
+    setCartItems(prev => prev.filter(item => item.id !== productId));
+  };
 
   useEffect(() => {
-    fetch("http://localhost:8080/customer/products")
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/customer/product/get`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched products:", data);
@@ -53,7 +60,7 @@ function MainContent() {
       <div className="layout-content-container flex flex-col max-w-[1300px] flex-1 rounded-xl bg-cover">
         <HeroPage onSearch={setSearch} products={products} />
         <Menu products={products}/>
-        <Products products={filteredProducts} />
+        <Products products={filteredProducts} cartItems={cartItems} setCartItems={setCartItems} />
         <ReviewSlider />
       </div>
     </div>

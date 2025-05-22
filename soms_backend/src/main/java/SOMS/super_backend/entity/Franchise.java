@@ -12,10 +12,9 @@ public class Franchise {
     @Id
     private String id;
 
-    @Indexed(unique = true)
-    private String name; // Unique Franchise Name
-
+    private String name;
     private String location;
-    private String adminId;
-    private String contact;
+    private String status; // ACTIVE / INACTIVE
+
+    private String userId;
 }

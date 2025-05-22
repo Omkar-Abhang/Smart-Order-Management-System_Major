@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import ForgotPassword from "./ForgotPassword";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,49 +10,54 @@ const Login = () => {
   const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  // forgot password  state
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Login function
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     if (!role || (role !== "Admin" && role !== "StoreOwner")) {
       alert("Please select a valid role: Admin or Store Owner");
       return;
     }
-  
+
     const loginPayload = {
       email,
       password,
       role,
     };
-  
+
     console.log("Login Payload:", loginPayload);
-  
+
     try {
       const response = await axios.post(
-        "http://localhost:8080/auth/login",
+        `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
         loginPayload
       );
-  
+
       if (response.data.token && response.data.role) {
-        if (response.data.role !== "Admin" && response.data.role !== "StoreOwner") {
+        if (
+          response.data.role !== "Admin" &&
+          response.data.role !== "StoreOwner"
+        ) {
           alert("Access denied: only Admin or Store Owner can log in.");
           return;
         }
-  
+
         alert("Login successful!");
-  
+
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
         localStorage.setItem("username", response.data.username);
         localStorage.setItem("id", response.data.id);
-  
+
         if (response.data.role === "Admin") {
           navigate("/admin");
         } else if (response.data.role === "StoreOwner") {
           navigate("/storeOwner");
         }
-  
+
         window.location.reload();
       } else {
         alert("Login failed. Please check your credentials.");
@@ -61,7 +67,7 @@ const Login = () => {
       alert("An error occurred while logging in.");
     }
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-slate-400 z-50">
       {/* Popup Container */}
@@ -133,6 +139,15 @@ const Login = () => {
           >
             Login
           </button>
+          <p
+            onClick={() => setShowForgotPassword(true)}
+            className="text-sm text-blue-600 underline mt-2 text-center cursor-pointer"
+          >
+            Forgot Password?
+          </p>
+          {showForgotPassword && (
+            <ForgotPassword onClose={() => setShowForgotPassword(false)} />
+          )}
         </form>
 
         <br />

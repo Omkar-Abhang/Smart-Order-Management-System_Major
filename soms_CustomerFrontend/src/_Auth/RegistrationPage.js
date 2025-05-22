@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const RegistrationPage = ({onClose}) => {
+const RegistrationPage = ({ onClose }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     role: "Customer",
@@ -15,11 +17,9 @@ const RegistrationPage = ({onClose}) => {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
-
-    console.log(userData);
     try {
       const response = await axios.post(
-        "http://localhost:8080/auth/register",
+        `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
         userData,
         {
           headers: {
@@ -29,15 +29,22 @@ const RegistrationPage = ({onClose}) => {
       );
       if (response.status === 200) {
         alert("Registration successful! Please login.");
-        navigate("/");
-      } else {
-        alert("Registration failed. Please try again.");
+        navigate("/login");
       }
     } catch (error) {
-      console.error("Error registering:", error);
-      alert("An error occurred during registration.");
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data === "Email already exists. Please use a different one."
+      ) {
+        alert("Email already exists. Try logging in or use another email.");
+      } else {
+        console.error("Error registering:", error);
+        alert("An error occurred during registration.");
+      }
     }
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-md z-50">
@@ -106,12 +113,14 @@ const RegistrationPage = ({onClose}) => {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label htmlFor="password" className="block text-gray-700 mb-1">
               Password
             </label>
+            <div className="flex items-center">
+
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               className="w-full p-2 border rounded"
               placeholder="Choose a password"
@@ -121,7 +130,40 @@ const RegistrationPage = ({onClose}) => {
               }
               required
             />
+            <button
+              type="button"
+              className="absolute right-3 mt-4 ml-4 transform -translate-y-1/2 text-gray-600"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+            </div>
           </div>
+
+          {/* <div className="mb-4 relative">
+                      <label htmlFor="password" className="block text-gray-700 mb-1">
+                        Password
+                      </label>
+                      <div className="flex items-center">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          className="w-full p-2 border rounded"
+                          placeholder="Enter your password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 mt-4 ml-4 transform -translate-y-1/2 text-gray-600"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                      </div>
+                    </div> */}
+
           <div className="mb-4">
             <label htmlFor="address" className="block text-gray-700 mb-1">
               Address
